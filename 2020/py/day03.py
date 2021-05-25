@@ -6,7 +6,8 @@ col = 0
 for line in lines[1:]:
     next_col = col + 3
     if next_col > len(line):
-        next_col = 
+        # next_col = 
+
 '''
 trees_count = 0
 tree = '#'

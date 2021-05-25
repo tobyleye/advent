@@ -60,5 +60,3 @@ for p in passports:
 # part #2
 print('valid passports:', valid_passports)
 print('valid passports part #2:', valid_passports_part2)
-
-

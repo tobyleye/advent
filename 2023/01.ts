@@ -2,7 +2,7 @@ import fs from "fs";
 
 let input = fs.readFileSync("./01.txt", "utf-8");
 
-const extractFirstAndLastDigits = (line) => {
+const extractFirstAndLastDigits = (line: string) => {
   let digits = line.replace(/[^0-9]/g, "");
   let firstDigit = digits[0] ?? "";
   let lastDigits = digits[digits.length - 1];
@@ -34,8 +34,11 @@ const part2 = () => {
 
   // replace all numbers spelled as letters
   let inputCopy = input;
+
   for (let key in lettersNumberMap) {
-    inputCopy = inputCopy.replaceAll(key, lettersNumberMap[key]);
+    // line below looks weird
+    let keyValue = lettersNumberMap[key as keyof typeof lettersNumberMap];
+    inputCopy = inputCopy.replaceAll(key, keyValue);
   }
 
   inputCopy.split("\n").forEach((line) => {

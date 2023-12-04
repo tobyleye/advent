@@ -2,11 +2,18 @@ import fs from "fs";
 
 let input = fs.readFileSync("./02.txt", "utf8");
 
-let parseLine = (line) => {
-  let [gameId, game] = line.split(":").map((each) => each.trim());
-  gameId = +gameId.split(" ")[1];
+let parseLine = (line: string) => {
+  let lineParts = line.split(":").map((each) => each.trim());
+  let game = lineParts[1];
+  let gameId = Number(lineParts[0].split(" ")[1]);
 
-  let sets = [];
+  type colorsStats = {
+    red: number;
+    green: number;
+    blue: number;
+  };
+
+  let sets: colorsStats[] = [];
 
   game.split("; ").forEach((set) => {
     set = set.trim();
@@ -16,14 +23,15 @@ let parseLine = (line) => {
       blue: 0,
     };
     set.split(", ").forEach((ballDrawn) => {
-      let [timesDrawn, color] = ballDrawn.split(" ");
-      timesDrawn = Number(timesDrawn);
+      let ballsDrawnParts = ballDrawn.split(" ");
+      let timesDrawn = Number(ballsDrawnParts[0]);
+      let color = ballsDrawnParts[1] as keyof colorsStats;
       totalColors[color] += timesDrawn;
     });
     sets.push(totalColors);
   });
 
-  return [gameId, sets];
+  return { gameId, sets };
 };
 
 const part1 = () => {
@@ -34,7 +42,7 @@ const part1 = () => {
     blue: 14,
   };
   input.split("\n").forEach((line) => {
-    let [gameId, sets] = parseLine(line);
+    let { gameId, sets } = parseLine(line);
     for (let set of sets) {
       if (set.red > max.red || set.green > max.green || set.blue > max.blue) {
         return;
@@ -48,14 +56,12 @@ const part1 = () => {
 const part2 = () => {
   let sumOfPower = 0;
   input.split("\n").forEach((line) => {
-    let [, sets] = parseLine(line);
+    let { sets } = parseLine(line);
     let minimumSet = { red: 0, green: 0, blue: 0 };
     sets.forEach((set) => {
-      for (let color of Object.keys(minimumSet)) {
-        if (set[color] > minimumSet[color]) {
-          minimumSet[color] = set[color];
-        }
-      }
+      minimumSet.red = Math.max(set.red, minimumSet.red);
+      minimumSet.green = Math.max(set.green, minimumSet.green);
+      minimumSet.blue = Math.max(set.blue, minimumSet.blue);
     });
     let power = minimumSet.red * minimumSet.green * minimumSet.blue;
 
